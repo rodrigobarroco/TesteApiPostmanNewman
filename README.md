@@ -6,3 +6,7 @@ https://www.npmjs.com/package/newman
 
 Documentação com passos para instalação do gerador de relatórios HTML
 https://www.npmjs.com/package/newman-reporter-htmlextra
+
+
+
+newman run collection.json -r htmlextra --reporter-htmlextra
