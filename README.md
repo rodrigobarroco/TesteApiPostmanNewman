@@ -1,6 +1,7 @@
 # TesteApiPostmanNewman
 Repositório com codigo de automação de teste de api com postman e newman
 
+
 Documentação do Newman
 https://www.npmjs.com/package/newman
 
