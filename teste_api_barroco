@@ -1,0 +1,786 @@
+{
+	"info": {
+		"_postman_id": "dd8793c8-44a3-4c58-8f58-5db17c601bb0",
+		"name": "Teste Api Trello",
+		"description": "Coleção de testes dos 4 metodos usando api publica do trello para o teste para vaga de QA na south system",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Fluxo Principal",
+			"item": [
+				{
+					"name": "Criar quadro Teste de API",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e2830227-f74f-4846-91d2-f1820b1ebf18",
+								"exec": [
+									"//Validar código de status = sucesso\r",
+									"pm.test(\"Código de Status é 200\", () => pm.response.to.have.status(200));\r",
+									"\r",
+									"const jasonData = pm.response.json();\r",
+									"\r",
+									"//Validar criação do quadro com sucesso\r",
+									"pm.test(`O quadro foi criado com sucesso`, function () {\r",
+									"    pm.expect(jasonData.name).to.eql(pm.environment.get(\"boardName\"));\r",
+									"    pm.expect(jasonData.closed).to.eql(false);\r",
+									"});\r",
+									"\r",
+									"//Validar que o quadro é do tipo privado\r",
+									"pm.test(\"O quadro deve ser privado\", function () {\r",
+									"    pm.expect(jasonData.prefs.permissionLevel).to.eql(\"private\");\r",
+									"});\r",
+									"\r",
+									"//setar variavel de ambiente com id do quadro\r",
+									"pm.environment.set(\"boardId\", jasonData.id);\r",
+									"\r",
+									"console.log(jasonData);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "c93863fb-7e05-407e-b324-b78bc20ca49f",
+								"exec": [
+									"pm.environment.set(\"boardId\",);\r",
+									"pm.environment.set(\"cardId\",);\r",
+									"pm.environment.set(\"listId\",);\r",
+									"\r",
+									"var boardNumber = 1;\r",
+									"pm.environment.set(\"boardName\", getIncrementBoardName(boardNumber));\r",
+									"function getIncrementBoardName(nu) {\r",
+									"    const boardName = `Teste de API ${nu}`;\r",
+									"    console.log(boardName);\r",
+									"    return boardName;\r",
+									"    \r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "file",
+							"file": {}
+						},
+						"url": {
+							"raw": "{{url}}/:apiVersion/boards/?name={{boardName}}&key={{trelloKey}}&token={{trelloToken}}&defaultLists=false",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								":apiVersion",
+								"boards",
+								""
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "{{boardName}}"
+								},
+								{
+									"key": "key",
+									"value": "{{trelloKey}}"
+								},
+								{
+									"key": "token",
+									"value": "{{trelloToken}}"
+								},
+								{
+									"key": "defaultLists",
+									"value": "false",
+									"description": "Cria listas padrão (A fazer, Em andamento e Concluido)"
+								}
+							],
+							"variable": [
+								{
+									"key": "apiVersion",
+									"value": "1"
+								}
+							]
+						},
+						"description": "criar novo quadro"
+					},
+					"response": []
+				},
+				{
+					"name": "Criar lista Em andamento",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "cfba830e-3050-43db-922d-a597f6fe4937",
+								"exec": [
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let jasonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"A lista foi criado com sucesso\", function () {\r",
+									"    pm.expect(jasonData.name).to.eql(pm.environment.get(\"listName\"));\r",
+									"    pm.expect(jasonData.closed).to.eql(false);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"A lista foi criada no quadro corrreto\", function () {\r",
+									"    pm.expect(jasonData.idBoard).to.eql(pm.environment.get(\"boardId\"));\r",
+									"});\r",
+									"\r",
+									"pm.environment.set(\"listId\", jasonData.id);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "c25b7317-6723-4143-a948-edff924da010",
+								"exec": [
+									"pm.environment.set(\"listName\", getIncrementListName());\r",
+									"\r",
+									"function getIncrementListName() {\r",
+									"    const listName = (\"Em andamento\");\r",
+									"    console.log(listName);\r",
+									"    return listName;\r",
+									"    \r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/:apiVersion/lists/?name={{listName}}&idBoard={{boardId}}&pos=bottom&key={{trelloKey}}&token={{trelloToken}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								":apiVersion",
+								"lists",
+								""
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "{{listName}}"
+								},
+								{
+									"key": "idBoard",
+									"value": "{{boardId}}"
+								},
+								{
+									"key": "pos",
+									"value": "bottom"
+								},
+								{
+									"key": "key",
+									"value": "{{trelloKey}}"
+								},
+								{
+									"key": "token",
+									"value": "{{trelloToken}}"
+								}
+							],
+							"variable": [
+								{
+									"key": "apiVersion",
+									"value": "1"
+								}
+							]
+						},
+						"description": "criar novo quadro"
+					},
+					"response": []
+				},
+				{
+					"name": "Criar cartão Teste de Cartão",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "11256b26-c9d6-40e6-afcb-80de8bb47da5",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let jasonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"O cartão foi criado com sucesso\", function () {\r",
+									"    pm.expect(jasonData.name).to.eql(pm.environment.get(\"cardName\"));\r",
+									"    pm.expect(jasonData.closed).to.eql(false);\r",
+									"});\r",
+									"\r",
+									"pm.environment.set(\"cardId\", jasonData.id);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "313ef731-3985-4706-8b19-d5bae4d5253c",
+								"exec": [
+									"pm.environment.set(\"cardName\", getIncrementcardName());\r",
+									"\r",
+									"function getIncrementcardName() {\r",
+									"    const cardName = (\"Teste de Cartão\");\r",
+									"    console.log(cardName);\r",
+									"    return cardName;\r",
+									"    \r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/:apiVersion/cards/?name={{cardName}}&key={{trelloKey}}&token={{trelloToken}}&idList={{listId}}&pos=bottom",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								":apiVersion",
+								"cards",
+								""
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "{{cardName}}"
+								},
+								{
+									"key": "key",
+									"value": "{{trelloKey}}"
+								},
+								{
+									"key": "token",
+									"value": "{{trelloToken}}"
+								},
+								{
+									"key": "idList",
+									"value": "{{listId}}"
+								},
+								{
+									"key": "pos",
+									"value": "bottom"
+								}
+							],
+							"variable": [
+								{
+									"key": "apiVersion",
+									"value": "1"
+								}
+							]
+						},
+						"description": "criar novo quadro"
+					},
+					"response": []
+				},
+				{
+					"name": "Criar lista Concluídas",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9561fb1d-0277-4810-835f-b9fc1fcb5a22",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let jasonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"A lista foi criado com sucesso\", function () {\r",
+									"    pm.expect(jasonData.name).to.eql(pm.environment.get(\"listName\"));\r",
+									"    pm.expect(jasonData.closed).to.eql(false);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"A lista foi criada no quadro corrreto\", function () {\r",
+									"    pm.expect(jasonData.idBoard).to.eql(pm.environment.get(\"boardId\"));\r",
+									"});\r",
+									"\r",
+									"pm.environment.set(\"listId\", jasonData.id);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "ee4f7ee3-bcef-4f39-a048-ac5a4bd67b42",
+								"exec": [
+									"pm.environment.set(\"listName\", getIncrementListName());\r",
+									"\r",
+									"function getIncrementListName() {\r",
+									"    const listName = (\"Concluídas\");\r",
+									"    console.log(listName);\r",
+									"    return listName;\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/:apiVersion/lists/?name={{listName}}&idBoard={{boardId}}&pos=bottom&key={{trelloKey}}&token={{trelloToken}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								":apiVersion",
+								"lists",
+								""
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "{{listName}}"
+								},
+								{
+									"key": "idBoard",
+									"value": "{{boardId}}"
+								},
+								{
+									"key": "pos",
+									"value": "bottom"
+								},
+								{
+									"key": "key",
+									"value": "{{trelloKey}}"
+								},
+								{
+									"key": "token",
+									"value": "{{trelloToken}}"
+								}
+							],
+							"variable": [
+								{
+									"key": "apiVersion",
+									"value": "1"
+								}
+							]
+						},
+						"description": "criar novo quadro"
+					},
+					"response": []
+				},
+				{
+					"name": "Alterar cartão para Concluídas",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "3a1735e0-f8e6-42a8-b7a8-d16d8a98576d",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"O cartão foi alterado com sucesso\", function () {\r",
+									"    pm.expect(jsonData.name).to.eql(pm.environment.get(\"cardName\"));\r",
+									"    pm.expect(jsonData.closed).to.eql(false);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"O cartão foi movido para a estrutura correta de Quadro e Lista\", function () {\r",
+									"    pm.expect(jsonData.idBoard).to.eql(pm.environment.get(\"boardId\"));\r",
+									"    pm.expect(jsonData.idList).to.eql(pm.environment.get(\"listId\"));\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "4ab3d1e8-efd6-4f3b-a6be-2ed058f6a244",
+								"exec": [
+									"pm.environment.set(\"cardName\", getIncrementcardName());\r",
+									"\r",
+									"function getIncrementcardName() {\r",
+									"    const cardName = (\"Teste de Cartão\");\r",
+									"    console.log(cardName);\r",
+									"    return cardName;\r",
+									"    \r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/:apiVersion/cards/:id?key={{trelloKey}}&token={{trelloToken}}&idList={{listId}}&pos=bottom",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								":apiVersion",
+								"cards",
+								":id"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{trelloKey}}"
+								},
+								{
+									"key": "token",
+									"value": "{{trelloToken}}"
+								},
+								{
+									"key": "idList",
+									"value": "{{listId}}"
+								},
+								{
+									"key": "pos",
+									"value": "bottom"
+								}
+							],
+							"variable": [
+								{
+									"key": "apiVersion",
+									"value": "1"
+								},
+								{
+									"key": "id",
+									"value": "{{cardId}}"
+								}
+							]
+						},
+						"description": "criar novo quadro"
+					},
+					"response": []
+				},
+				{
+					"name": "Consultar quadro South System",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5fd8175b-8155-49ec-ba6a-62c5884f2727",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"O quadro foi criado com sucesso\", function () {\r",
+									"    pm.expect(jsonData.name).to.eql(pm.environment.get(\"boardName\"));\r",
+									"    pm.expect(jsonData.closed).to.eql(false);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"O quadro deve ser privado\", function () {\r",
+									"    pm.expect(jsonData.prefs.permissionLevel).to.eql(\"private\");\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/:apiVersion/boards/:id?key={{trelloKey}}&token={{trelloToken}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								":apiVersion",
+								"boards",
+								":id"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{trelloKey}}"
+								},
+								{
+									"key": "token",
+									"value": "{{trelloToken}}"
+								},
+								{
+									"key": "defaultLists",
+									"value": "false",
+									"description": "Cria listas padrão (A fazer, Em andamento e Concluido)",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "apiVersion",
+									"value": "1"
+								},
+								{
+									"key": "id",
+									"value": "{{boardId}}"
+								}
+							]
+						},
+						"description": "criar novo quadro"
+					},
+					"response": []
+				},
+				{
+					"name": "Apagar quadro South System",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "78fa0e36-22a8-40d4-be31-ca0a783b1a7f",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/:apiVersion/boards/:id?key={{trelloKey}}&token={{trelloToken}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								":apiVersion",
+								"boards",
+								":id"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{trelloKey}}"
+								},
+								{
+									"key": "token",
+									"value": "{{trelloToken}}"
+								},
+								{
+									"key": "defaultLists",
+									"value": "false",
+									"description": "Cria listas padrão (A fazer, Em andamento e Concluido)",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "apiVersion",
+									"value": "1"
+								},
+								{
+									"key": "id",
+									"value": "{{boardId}}"
+								}
+							]
+						},
+						"description": "criar novo quadro"
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Fluxo de Excessão",
+			"item": [
+				{
+					"name": "Criar quadro sem informar nome",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0e6723bd-0329-4d09-b6ad-1562eb26d0da",
+								"exec": [
+									"//Teste com metodo post para api de criação de quadros, sem informar o parametro \"name\" que é obrigatório\r",
+									"//Resultado esperado é o status 404 não encontrado\r",
+									"pm.test(\"Código de Status é 400\", () => pm.response.to.have.status(400));"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "eb614ffe-2902-4084-8a8d-57d682dfdf7d",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "file",
+							"file": {}
+						},
+						"url": {
+							"raw": "{{url}}/:apiVersion/boards/?key={{trelloKey}}&token={{trelloToken}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								":apiVersion",
+								"boards",
+								""
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{trelloKey}}"
+								},
+								{
+									"key": "token",
+									"value": "{{trelloToken}}"
+								},
+								{
+									"key": "defaultLists",
+									"value": "false",
+									"description": "Cria listas padrão (A fazer, Em andamento e Concluido)",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "apiVersion",
+									"value": "1"
+								}
+							]
+						},
+						"description": "criar novo quadro"
+					},
+					"response": []
+				},
+				{
+					"name": "Consultar quadro apagado",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "6c206334-9c00-4d33-8cfd-a0dc70be766f",
+								"exec": [
+									"pm.test(\"O quadro não existe\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"//let jsonData = pm.response.json();\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/:apiVersion/boards/:id?key={{trelloKey}}&token={{trelloToken}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								":apiVersion",
+								"boards",
+								":id"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{trelloKey}}"
+								},
+								{
+									"key": "token",
+									"value": "{{trelloToken}}"
+								},
+								{
+									"key": "defaultLists",
+									"value": "false",
+									"description": "Cria listas padrão (A fazer, Em andamento e Concluido)",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "apiVersion",
+									"value": "1"
+								},
+								{
+									"key": "id",
+									"value": "5f0535b83f6ac9317842f88d"
+								}
+							]
+						},
+						"description": "criar novo quadro"
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "66cd9be4-5732-44bc-818a-8d908c1b6fa9",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "58c9a5b2-a1ef-4414-8c69-24a8b698519c",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
