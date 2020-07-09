@@ -38,4 +38,4 @@ https://www.npmjs.com/package/newman-reporter-htmlextra
 
 Comando para executar o newman
 
-newman run collection.json -r htmlextra --reporter-htmlextra
+newman run teste_api_barroco --environment trelloapi -r htmlextra --reporter-htmlextra
