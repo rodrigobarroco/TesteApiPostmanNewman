@@ -36,6 +36,8 @@ Documentação com passos para instalação do gerador de relatórios HTML
 https://www.npmjs.com/package/newman-reporter-htmlextra
 
 
-Comando para executar o newman
+Instruçoes para executar o newman: Após realizar as instalações descritas acima, baixar os arquivos teste_api_barroco e trelloapi e salvar no diretório onde o postman foi instalado.
+
+Abrir o terminal, ir para o diretorio onde o postman foi instalado e executar o comando abaixo.
 
 newman run teste_api_barroco --environment trelloapi -r htmlextra --reporter-htmlextra
