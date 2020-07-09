@@ -1,0 +1,59 @@
+{
+	"id": "c2fb6871-904f-458f-b0ab-d1ae9e10906f",
+	"name": "trelloapi",
+	"values": [
+		{
+			"key": "url",
+			"value": "https://api.trello.com",
+			"enabled": true
+		},
+		{
+			"key": "trelloKey",
+			"value": "e2c3f68a3fe5c94b87af806ba1a7abd2",
+			"enabled": true
+		},
+		{
+			"key": "trelloToken",
+			"value": "2054df678784aa94fc1d890b36804fada52616c19cc8f6d8c4f966b9a316b54d",
+			"enabled": true
+		},
+		{
+			"key": "boardName",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "boardId",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "ambiente",
+			"value": "QA",
+			"enabled": true
+		},
+		{
+			"key": "listId",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "cardId",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "listName",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "cardName",
+			"value": "",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2020-07-09T01:42:36.889Z",
+	"_postman_exported_using": "Postman/7.27.1"
+}
