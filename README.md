@@ -11,11 +11,11 @@ Como fazer login no trello
 
 https://trello.com/login?returnUrl=%2F1%2Fauthorize%3FrequestKey%3Dca601a06e233d54bbdd877165fece044
 
-Como adiquirir uma chave do trello (a variavel ja esta preenchida com a minha chave)
+Como adquirir uma chave do trello (a variavel ja esta preenchida com a minha chave)
 
 https://trello.com/app-key
 
-Como adiquirir um token do trello (a variável ja esta preenchida com o meu token)
+Como adquirir um token do trello (a variável ja esta preenchida com o meu token)
 
 https://trello.com/1/authorize?expiration=never&scope=read,write,account&response_type=token&name=Server%20Token&key=e2c3f68a3fe5c94b87af806ba1a7abd2
 
