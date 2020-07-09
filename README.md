@@ -13,6 +13,11 @@ https://trello.com/app-key
 Como adiquirir um token do trello
 https://trello.com/1/authorize?expiration=never&scope=read,write,account&response_type=token&name=Server%20Token&key=e2c3f68a3fe5c94b87af806ba1a7abd2
 
+Indo atras da informação sobre a biblioteca postmanBDD no git no criador:
+https://github.com/JamesMessinger/postman-bdd
+
+Descobri que a biblioteca não é mais necessária, pois o postman tem suporte para Chai Assertion Library
+https://www.chaijs.com/api/bdd/
 
 Documentação do Newman
 https://www.npmjs.com/package/newman
